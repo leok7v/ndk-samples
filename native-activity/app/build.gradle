@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = 'com.example.native_activity'
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 34
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_STL=c++_static'
@@ -33,7 +33,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.startup:startup-runtime:1.1.0"
+    implementation 'androidx.startup:startup-runtime:1.1.1'
 }
