@@ -1,4 +1,17 @@
 @echo off
+setlocal enabledelayedexpansion
+
+:: Assumption Android Studio is installed for current user only:
+if not defined ANDROID_HOME (
+	if exist "%USERPROFILE%\AppData\Local\Android\Sdk" (
+        set ANDROID_HOME=%USERPROFILE%\AppData\Local\Android\Sdk
+	)
+)
+
+if not defined ANDROID_HOME (
+	echo Install Android Studio or Android SDK
+	exit /b 1
+)
 
 :: Java JDR/JRE is expected here:
 :: C:\Program Files\Android\Android Studio\jbr\bin
@@ -6,53 +19,32 @@
 
 if not defined JAVA_HOME (
     if exist "%ProgramFiles%\Android\Android Studio\jbr\bin\javac.exe" (
-        set JAVA_HOME="%ProgramFiles%\Android\Android Studio\jbr"
+        set JAVA_HOME=%ProgramFiles%\Android\Android Studio\jbr
 	)
 )
 
 if not defined JAVA_HOME (
-    if exist "%ProgramFiles%\jdk-21\bin\javac.exe" (
-        set JAVA_HOME="%ProgramFiles%\\jdk-21"
+    if exist "%ProgramFiles%\Java\jdk-21\bin\javac.exe" (
+        set JAVA_HOME=%ProgramFiles%\Java\jdk-21
 	)
 )
 
-:: TODO: may be remove it?
 if not defined JAVA_HOME (
-    if exist "%ProgramFiles%\jdk-20\bin\javac.exe" (
-        set JAVA_HOME="%ProgramFiles%\\jdk-20"
-	)
+	echo "Install JDK-21"
+	echo "https://www.oracle.com/java/technologies/downloads/#jdk21-windows"
+	echo "or https://jdk.java.net/21/"
+	exit /b 1
 )
-
-if defined JAVA_HOME goto java_home_ok
-echo "Install JDK-21 and/or Android Studio or Android SDK"
-echo "https://www.oracle.com/java/technologies/downloads/#jdk21-windows"
-echo "or https://jdk.java.net/21/"
-exit /b 1
-:java_home_ok
-echo JAVA_HOME=%JAVA_HOME%
-
-:: Assumption Android Studio is installed for current user only:
-if not defined ANDROID_HOME (
-	if exist "%USERPROFILE%\AppData\Local\Android\Sdk" (
-        set ANDROID_HOME="%USERPROFILE%\AppData\Local\Android\Sdk"
-	)
-)
-
-if defined ANDROID_HOME goto android_home_ok
-echo Install Android Studio or Android SDK
-exit /b 1
-:android_home_ok
-echo ANDROID_HOME=%ANDROID_HOME%
 
 :: change next line to reflect where Android SDK is installed.
 :: IMPORTANT: both ":" and "\" must be escaped with "\"
+:: expected content of local.properties file is:
+:: sdk.dir=C\:\\Users\\%username%\\AppData\\Local\\Android\\Sdk
 if not exist local.properties (
-    set ANDROID_HOME_ESCAPED=%ANDROID_HOME:\=\\:%
-    set ANDROID_HOME_ESCAPED=!ANDROID_HOME_ESCAPED:/=\\!
+    set ANDROID_HOME_ESCAPED=!ANDROID_HOME:\=\\!
+    set ANDROID_HOME_ESCAPED=!ANDROID_HOME_ESCAPED::=\:!
     > local.properties echo sdk.dir=!ANDROID_HOME_ESCAPED!
 )
-
-::  > local.properties echo sdk.dir=C\:\\Users\\%username%\\AppData\\Local\\Android\\Sdk
 
 :: Could not compile settings file settings.gradle
 :: Unsupported class file major version 65
@@ -62,25 +54,9 @@ if not exist local.properties (
 :: Java SE 22 = 66,
 :: Java SE 21 = 65,
 :: Java SE 20 = 64,
-:: Java SE 19 = 63,
-:: Java SE 18 = 62,
-:: Java SE 17 = 61,
-:: Java SE 16 = 60, 
-:: Java SE 15 = 59,
-:: Java SE 14 = 58,
-:: Java SE 13 = 57,
-:: Java SE 12 = 56,
-:: Java SE 11 = 55,
-:: Java SE 10 = 54,
+:: ..
 :: Java SE 9 = 53,
 :: Java SE 8 = 52,
-:: Java SE 7 = 51,
-:: Java SE 6.0 = 50,
-:: Java SE 5.0 = 49,
-:: JDK 1.4 = 48,
-:: JDK 1.3 = 47,
-:: JDK 1.2 = 46,
-:: JDK 1.1 = 45
 ::
 :: see:
 :: https://services.gradle.org/distributions/
